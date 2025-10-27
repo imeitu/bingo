@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Sleep Icon -->
+  <path d="M 20 45 L 10 25 L 30 25 L 20 5 L 40 5 L 30 25 L 50 25 L 40 45 Z" 
+        fill="#DDD6FE" stroke="#9333EA" stroke-width="2"/>
+  
+  <!-- Z letters for sleep -->
+  <text x="35" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#9333EA">Z</text>
+  <text x="42" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#C4B5FD">Z</text>
+  <text x="48" y="12" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E9D5FF">Z</text>
+</svg>
