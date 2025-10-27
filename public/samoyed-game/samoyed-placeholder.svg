@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Samoyed Dog SVG Placeholder -->
+  
+  <!-- Body -->
+  <ellipse cx="100" cy="120" rx="60" ry="50" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="60" r="40" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Left Ear -->
+  <ellipse cx="75" cy="35" rx="15" ry="25" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Right Ear -->
+  <ellipse cx="125" cy="35" rx="15" ry="25" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Left Eye -->
+  <circle cx="85" cy="55" r="5" fill="#1F2937"/>
+  <circle cx="87" cy="53" r="2" fill="#FFFFFF"/>
+  
+  <!-- Right Eye -->
+  <circle cx="115" cy="55" r="5" fill="#1F2937"/>
+  <circle cx="117" cy="53" r="2" fill="#FFFFFF"/>
+  
+  <!-- Nose -->
+  <ellipse cx="100" cy="70" rx="8" ry="6" fill="#1F2937"/>
+  
+  <!-- Mouth -->
+  <path d="M 100 70 Q 90 80 85 75" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 100 70 Q 110 80 115 75" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Fluffy fur details -->
+  <circle cx="70" cy="50" r="8" fill="#F9FAFB" opacity="0.6"/>
+  <circle cx="130" cy="50" r="8" fill="#F9FAFB" opacity="0.6"/>
+  <circle cx="75" cy="120" r="12" fill="#F9FAFB" opacity="0.6"/>
+  <circle cx="125" cy="120" r="12" fill="#F9FAFB" opacity="0.6"/>
+  
+  <!-- Legs -->
+  <rect x="75" y="160" width="15" height="30" rx="7" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <rect x="110" y="160" width="15" height="30" rx="7" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- Paws -->
+  <ellipse cx="82.5" cy="185" rx="10" ry="7" fill="#F3F4F6"/>
+  <ellipse cx="117.5" cy="185" rx="10" ry="7" fill="#F3F4F6"/>
+  
+  <!-- Tail -->
+  <path d="M 140 110 Q 160 100 165 80 Q 170 90 160 100 Q 150 110 145 115" 
+        fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+</svg>

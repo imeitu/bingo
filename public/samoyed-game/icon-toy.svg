@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Ball Icon -->
+  <circle cx="32" cy="32" r="24" fill="#FDE047" stroke="#EAB308" stroke-width="2"/>
+  <path d="M 15 25 Q 32 28 49 25" stroke="#EAB308" stroke-width="2" fill="none"/>
+  <path d="M 15 39 Q 32 36 49 39" stroke="#EAB308" stroke-width="2" fill="none"/>
+  <path d="M 25 15 Q 28 32 25 49" stroke="#EAB308" stroke-width="2" fill="none"/>
+  <path d="M 39 15 Q 36 32 39 49" stroke="#EAB308" stroke-width="2" fill="none"/>
+</svg>
