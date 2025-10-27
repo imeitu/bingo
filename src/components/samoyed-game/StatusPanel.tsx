@@ -34,9 +34,11 @@ export function StatusPanel() {
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-pink-200">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border-2 border-pink-200">
       <div className="mb-4 text-center">
-        <span className="text-4xl">{getMoodEmoji()}</span>
+        <span className="text-4xl" role="img" aria-label={`Mood: ${mood}`}>
+          {getMoodEmoji()}
+        </span>
         <h3 className="text-xl font-semibold text-purple-700 capitalize mt-2">
           Mood: {mood}
         </h3>
@@ -49,11 +51,21 @@ export function StatusPanel() {
               <span className="text-sm font-medium text-gray-700 capitalize">
                 {key}
               </span>
-              <span className={cn('text-sm font-bold', getStatColor(value))}>
+              <span
+                className={cn('text-sm font-bold', getStatColor(value))}
+                aria-label={`${key}: ${value} percent`}
+              >
                 {value}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div
+              className="w-full bg-gray-200 rounded-full h-3 overflow-hidden"
+              role="progressbar"
+              aria-valuenow={value}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${key} level`}
+            >
               <div
                 className={cn(
                   'h-full rounded-full transition-all duration-300',
