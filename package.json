@@ -8,7 +8,9 @@
     "build": "next build",
     "proxy": "node ./cloudflare/cli.js",
     "start": "node ./scripts/pre-check.js && cross-env NODE_ENV=production node ./server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -95,6 +97,7 @@
     "@typescript-eslint/parser": "^5.60.1",
     "cross-env": "^7.0.3",
     "openai": "^4.7.1",
-    "sass": "^1.66.1"
+    "sass": "^1.66.1",
+    "vitest": "^4.0.4"
   }
 }

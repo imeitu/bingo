@@ -18,40 +18,37 @@ import {
   STAT_CRITICAL_THRESHOLD,
   getStatLabel,
 } from './types'
+import {
+  applyFoodEffect,
+  applyToyEffect,
+  applyCleaningEffect,
+  applyRestEffect,
+  isValidStateTransition,
+} from './interactions'
 
 export const petStatsAtom = atomWithStorage<PetStats>(
   'samoyed-game:petStats',
-  DEFAULT_PET_STATS,
-  undefined,
-  { unstable_getOnInit: true }
+  DEFAULT_PET_STATS
 )
 
 export const currentSceneAtom = atomWithStorage<SceneType>(
   'samoyed-game:currentScene',
-  SceneType.Home,
-  undefined,
-  { unstable_getOnInit: true }
+  SceneType.Home
 )
 
 export const inventoryAtom = atomWithStorage<InventoryItem[]>(
   'samoyed-game:inventory',
-  DEFAULT_INVENTORY,
-  undefined,
-  { unstable_getOnInit: true }
+  DEFAULT_INVENTORY
 )
 
 export const gameFlagsAtom = atomWithStorage<GameFlags>(
   'samoyed-game:flags',
-  DEFAULT_FLAGS,
-  undefined,
-  { unstable_getOnInit: true }
+  DEFAULT_FLAGS
 )
 
 export const notificationsAtom = atomWithStorage<GameNotification[]>(
   'samoyed-game:notifications',
-  [],
-  undefined,
-  { unstable_getOnInit: true }
+  []
 )
 
 export const currentMoodAtom = atom<MoodType>((get) => {
@@ -82,19 +79,18 @@ export const feedPetAtom = atom(
     const inventory = get(inventoryAtom)
     const item = inventory.find((i) => i.id === itemId && i.type === 'food')
     
-    if (item && item.quantity > 0) {
-      const updatedInventory = inventory.map((i) =>
-        i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i
-      )
-      set(inventoryAtom, updatedInventory)
-      
-      const currentStats = get(petStatsAtom)
-      set(petStatsAtom, {
-        ...currentStats,
-        hunger: clampStat(currentStats.hunger + 20),
-        happiness: clampStat(currentStats.happiness + 5),
-      })
-    }
+    if (!item || item.quantity <= 0) return
+    
+    const currentStats = get(petStatsAtom)
+    if (!isValidStateTransition(currentStats, 'feed')) return
+    
+    const updatedInventory = inventory.map((i) =>
+      i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i
+    )
+    set(inventoryAtom, updatedInventory)
+    
+    const newStats = applyFoodEffect(currentStats, itemId)
+    set(petStatsAtom, newStats)
   }
 )
 
@@ -103,6 +99,8 @@ export const playWithPetAtom = atom(
   (get, set, itemId?: string) => {
     const currentStats = get(petStatsAtom)
     
+    if (!isValidStateTransition(currentStats, 'play')) return
+    
     if (itemId) {
       const inventory = get(inventoryAtom)
       const item = inventory.find((i) => i.id === itemId && i.type === 'toy')
@@ -110,36 +108,46 @@ export const playWithPetAtom = atom(
       if (!item) return
     }
     
-    set(petStatsAtom, {
-      ...currentStats,
-      happiness: clampStat(currentStats.happiness + 15),
-      energy: clampStat(currentStats.energy - 10),
-      hunger: clampStat(currentStats.hunger - 5),
-    })
+    const newStats = applyToyEffect(currentStats, itemId)
+    set(petStatsAtom, newStats)
   }
 )
 
 export const cleanPetAtom = atom(
   null,
-  (get, set) => {
+  (get, set, cleaningType: string = 'bath') => {
     const currentStats = get(petStatsAtom)
-    set(petStatsAtom, {
-      ...currentStats,
-      cleanliness: clampStat(currentStats.cleanliness + 30),
-      happiness: clampStat(currentStats.happiness + 5),
-    })
+    
+    if (!isValidStateTransition(currentStats, 'clean')) return
+    
+    const newStats = applyCleaningEffect(currentStats, cleaningType)
+    set(petStatsAtom, newStats)
   }
 )
 
 export const restPetAtom = atom(
   null,
-  (get, set) => {
+  (get, set, restType: string = 'sleep') => {
     const currentStats = get(petStatsAtom)
-    set(petStatsAtom, {
-      ...currentStats,
-      energy: clampStat(currentStats.energy + 40),
-      hunger: clampStat(currentStats.hunger - 10),
+    const flags = get(gameFlagsAtom)
+    
+    if (!isValidStateTransition(currentStats, 'rest')) return
+    
+    const newStats = applyRestEffect(currentStats, restType)
+    set(petStatsAtom, newStats)
+    
+    set(gameFlagsAtom, {
+      ...flags,
+      isSleeping: true,
     })
+    
+    setTimeout(() => {
+      const currentFlags = gameFlagsAtom
+      set(gameFlagsAtom, {
+        ...flags,
+        isSleeping: false,
+      })
+    }, 3000)
   }
 )
 
