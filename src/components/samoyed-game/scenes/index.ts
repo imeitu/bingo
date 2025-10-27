@@ -1,0 +1,5 @@
+export { SamoyedAvatar } from './SamoyedAvatar'
+export { LivingRoomScene } from './LivingRoomScene'
+export { GardenScene } from './GardenScene'
+export { BathroomScene } from './BathroomScene'
+export { SceneSwitcher } from './SceneSwitcher'
