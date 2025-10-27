@@ -16,9 +16,13 @@ export function StatusPanel() {
   }
 
   const getStatBgColor = (value: number) => {
-    if (value <= STAT_CRITICAL_THRESHOLD) return 'bg-red-200'
-    if (value <= STAT_WARNING_THRESHOLD) return 'bg-yellow-200'
-    return 'bg-green-200'
+    if (value <= STAT_CRITICAL_THRESHOLD) return 'bg-red-500'
+    if (value <= STAT_WARNING_THRESHOLD) return 'bg-yellow-400'
+    return 'bg-green-400'
+  }
+  
+  const shouldPulse = (value: number) => {
+    return value <= STAT_CRITICAL_THRESHOLD
   }
 
   const getMoodEmoji = () => {
@@ -68,8 +72,9 @@ export function StatusPanel() {
             >
               <div
                 className={cn(
-                  'h-full rounded-full transition-all duration-300',
-                  getStatBgColor(value)
+                  'h-full rounded-full transition-all duration-500 ease-out',
+                  getStatBgColor(value),
+                  shouldPulse(value) && 'animate-pulse'
                 )}
                 style={{ width: `${value}%` }}
               />

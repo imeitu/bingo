@@ -8,16 +8,20 @@ import {
   restPetAtom,
   inventoryAtom,
   dayPhaseAtom,
+  petStatsAtom,
 } from '@/state/samoyed-game/atoms'
 import { DayPhase } from '@/state/samoyed-game/types'
+import { getTransitionError } from '@/state/samoyed-game/interactions'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { playSound, setUserInteracted } from '@/lib/sound-effects'
+import toast from 'react-hot-toast'
 
 export function ActionPanel() {
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
   const inventory = useAtomValue(inventoryAtom)
   const dayPhase = useAtomValue(dayPhaseAtom)
+  const stats = useAtomValue(petStatsAtom)
   const feedPet = useSetAtom(feedPetAtom)
   const playWithPet = useSetAtom(playWithPetAtom)
   const cleanPet = useSetAtom(cleanPetAtom)
@@ -36,6 +40,11 @@ export function ActionPanel() {
   }
 
   const handlePlay = (itemId?: string) => {
+    const error = getTransitionError(stats, 'play')
+    if (error) {
+      toast.error(error)
+      return
+    }
     setUserInteracted()
     playWithPet(itemId)
     playSound('play')
@@ -43,6 +52,11 @@ export function ActionPanel() {
   }
 
   const handleClean = () => {
+    const error = getTransitionError(stats, 'clean')
+    if (error) {
+      toast.error(error)
+      return
+    }
     setUserInteracted()
     cleanPet()
     playSound('clean')

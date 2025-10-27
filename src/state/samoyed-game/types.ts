@@ -54,6 +54,7 @@ export interface GameFlags {
   lastSavedAt: number
   gameClock: number
   soundEnabled: boolean
+  isSleeping?: boolean
 }
 
 export interface GameState {
@@ -87,10 +88,24 @@ export const DEFAULT_INVENTORY: InventoryItem[] = [
     quantity: 5,
   },
   {
+    id: 'treat',
+    name: 'Treat',
+    type: 'food',
+    icon: '🦴',
+    quantity: 3,
+  },
+  {
     id: 'ball',
     name: 'Tennis Ball',
     type: 'toy',
     icon: '🎾',
+    quantity: 1,
+  },
+  {
+    id: 'chew-toy',
+    name: 'Chew Toy',
+    type: 'toy',
+    icon: '🧸',
     quantity: 1,
   },
 ]
