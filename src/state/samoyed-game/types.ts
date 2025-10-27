@@ -22,6 +22,22 @@ export enum MoodType {
   Excited = 'excited',
 }
 
+export enum DayPhase {
+  Dawn = 'dawn',
+  Day = 'day',
+  Dusk = 'dusk',
+  Night = 'night',
+}
+
+export interface GameNotification {
+  id: string
+  type: 'warning' | 'critical' | 'info' | 'success'
+  message: string
+  stat?: keyof PetStats
+  timestamp: number
+  dismissed: boolean
+}
+
 export interface InventoryItem {
   id: string
   name: string
@@ -35,6 +51,9 @@ export interface GameFlags {
   tutorialCompleted: boolean
   lastPlayedAt: number
   totalPlayTime: number
+  lastSavedAt: number
+  gameClock: number
+  soundEnabled: boolean
 }
 
 export interface GameState {
@@ -43,6 +62,8 @@ export interface GameState {
   currentMood: MoodType
   inventory: InventoryItem[]
   flags: GameFlags
+  dayPhase: DayPhase
+  notifications: GameNotification[]
 }
 
 export const STAT_MIN = 0
@@ -79,6 +100,9 @@ export const DEFAULT_FLAGS: GameFlags = {
   tutorialCompleted: false,
   lastPlayedAt: Date.now(),
   totalPlayTime: 0,
+  lastSavedAt: Date.now(),
+  gameClock: 0,
+  soundEnabled: false,
 }
 
 export function clampStat(value: number): number {
@@ -92,4 +116,26 @@ export function calculateMood(stats: PetStats): MoodType {
   if (stats.happiness < STAT_WARNING_THRESHOLD) return MoodType.Sad
   if (stats.happiness > 90) return MoodType.Excited
   return MoodType.Happy
+}
+
+export function calculateDayPhase(gameClock: number): DayPhase {
+  const hourInMs = 60 * 1000
+  const dayLength = hourInMs * 24
+  const timeOfDay = gameClock % dayLength
+  const hour = (timeOfDay / hourInMs) % 24
+
+  if (hour >= 5 && hour < 8) return DayPhase.Dawn
+  if (hour >= 8 && hour < 17) return DayPhase.Day
+  if (hour >= 17 && hour < 20) return DayPhase.Dusk
+  return DayPhase.Night
+}
+
+export function getStatLabel(stat: keyof PetStats): string {
+  const labels: Record<keyof PetStats, string> = {
+    hunger: 'Hunger',
+    happiness: 'Happiness',
+    cleanliness: 'Cleanliness',
+    energy: 'Energy',
+  }
+  return labels[stat]
 }

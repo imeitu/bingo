@@ -6,11 +6,17 @@ import {
   MoodType,
   InventoryItem,
   GameFlags,
+  GameNotification,
+  DayPhase,
   DEFAULT_PET_STATS,
   DEFAULT_INVENTORY,
   DEFAULT_FLAGS,
   calculateMood,
+  calculateDayPhase,
   clampStat,
+  STAT_WARNING_THRESHOLD,
+  STAT_CRITICAL_THRESHOLD,
+  getStatLabel,
 } from './types'
 
 export const petStatsAtom = atomWithStorage<PetStats>(
@@ -41,9 +47,21 @@ export const gameFlagsAtom = atomWithStorage<GameFlags>(
   { unstable_getOnInit: true }
 )
 
+export const notificationsAtom = atomWithStorage<GameNotification[]>(
+  'samoyed-game:notifications',
+  [],
+  undefined,
+  { unstable_getOnInit: true }
+)
+
 export const currentMoodAtom = atom<MoodType>((get) => {
   const stats = get(petStatsAtom)
   return calculateMood(stats)
+})
+
+export const dayPhaseAtom = atom<DayPhase>((get) => {
+  const flags = get(gameFlagsAtom)
+  return calculateDayPhase(flags.gameClock)
 })
 
 export const updateStatAtom = atom(
@@ -148,6 +166,107 @@ export const completeTutorialAtom = atom(
       ...flags,
       firstVisit: false,
       tutorialCompleted: true,
+    })
+  }
+)
+
+export const advanceGameClockAtom = atom(
+  null,
+  (get, set, deltaMs: number) => {
+    const flags = get(gameFlagsAtom)
+    set(gameFlagsAtom, {
+      ...flags,
+      gameClock: flags.gameClock + deltaMs,
+    })
+  }
+)
+
+export const toggleSoundAtom = atom(
+  null,
+  (get, set) => {
+    const flags = get(gameFlagsAtom)
+    set(gameFlagsAtom, {
+      ...flags,
+      soundEnabled: !flags.soundEnabled,
+    })
+  }
+)
+
+export const saveGameAtom = atom(
+  null,
+  (get, set) => {
+    const flags = get(gameFlagsAtom)
+    set(gameFlagsAtom, {
+      ...flags,
+      lastSavedAt: Date.now(),
+    })
+  }
+)
+
+export const addNotificationAtom = atom(
+  null,
+  (get, set, notification: Omit<GameNotification, 'id' | 'timestamp' | 'dismissed'>) => {
+    const notifications = get(notificationsAtom)
+    const newNotification: GameNotification = {
+      ...notification,
+      id: `notif-${Date.now()}-${Math.random()}`,
+      timestamp: Date.now(),
+      dismissed: false,
+    }
+    set(notificationsAtom, [...notifications, newNotification])
+  }
+)
+
+export const dismissNotificationAtom = atom(
+  null,
+  (get, set, id: string) => {
+    const notifications = get(notificationsAtom)
+    set(
+      notificationsAtom,
+      notifications.map((n) => (n.id === id ? { ...n, dismissed: true } : n))
+    )
+  }
+)
+
+export const clearOldNotificationsAtom = atom(
+  null,
+  (get, set) => {
+    const notifications = get(notificationsAtom)
+    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000
+    set(
+      notificationsAtom,
+      notifications.filter((n) => !n.dismissed || n.timestamp > fiveMinutesAgo)
+    )
+  }
+)
+
+export const checkStatsAndNotifyAtom = atom(
+  null,
+  (get, set) => {
+    const stats = get(petStatsAtom)
+    const notifications = get(notificationsAtom)
+    
+    Object.entries(stats).forEach(([stat, value]) => {
+      const statKey = stat as keyof PetStats
+      const recentNotif = notifications.find(
+        (n) => n.stat === statKey && !n.dismissed && Date.now() - n.timestamp < 60000
+      )
+      
+      if (!recentNotif) {
+        if (value <= STAT_CRITICAL_THRESHOLD) {
+          set(addNotificationAtom, {
+            type: 'critical',
+            message: `${getStatLabel(statKey)} is critically low!`,
+            stat: statKey,
+          })
+        } else if (value <= STAT_WARNING_THRESHOLD) {
+          set(addNotificationAtom, {
+            type: 'warning',
+            message: `${getStatLabel(statKey)} is getting low.`,
+            stat: statKey,
+          })
+        }
+      }
     })
   }
 )
